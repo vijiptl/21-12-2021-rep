@@ -2,6 +2,7 @@ package com.jobsniper.ai.worker
 
 import android.content.Context
 import androidx.work.CoroutineWorker
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
@@ -25,7 +26,6 @@ class JobMonitorWorker(
             scheduleNext(applicationContext)
             Result.success()
         }.getOrElse {
-            scheduleNext(applicationContext)
             Result.retry()
         }
     }
@@ -34,7 +34,9 @@ class JobMonitorWorker(
         val next = OneTimeWorkRequestBuilder<JobMonitorWorker>()
             .setInitialDelay(2, TimeUnit.MINUTES)
             .build()
-        WorkManager.getInstance(context).enqueue(next)
+        WorkManager.getInstance(context)
+            .beginUniqueWork(UNIQUE_NAME, ExistingWorkPolicy.APPEND_OR_REPLACE, next)
+            .enqueue()
     }
 
     companion object {
