@@ -35,8 +35,7 @@ class JobMonitorWorker(
             .setInitialDelay(2, TimeUnit.MINUTES)
             .build()
         WorkManager.getInstance(context)
-            .beginUniqueWork(UNIQUE_NAME, ExistingWorkPolicy.APPEND_OR_REPLACE, next)
-            .enqueue()
+
     }
 
     companion object {
